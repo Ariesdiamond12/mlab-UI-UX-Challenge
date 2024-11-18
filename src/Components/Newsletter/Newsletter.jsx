@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Newsletter.module.css";
 import icon_list from "../../assets/icon-list.svg";
 import desktop_sign_up from "../../assets/illustration-sign-up-desktop.svg";
+import mobile_sign_up from "../../assets/illustration-sign-up-mobile.svg";
 import Modal from "../Modal/Modal";
 
 function Newsletter() {
   const [email, setEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [view, setView] = useState(window.innerWidth);
 
   // Basic email validation
   const isValidEmailFormat = (inputEmail) => {
@@ -46,19 +48,26 @@ function Newsletter() {
     setEmail("");
   };
 
+useEffect(() =>{
+  const handleResize = () => {
+    setView(window.innerWidth);
+  }
+
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize)
+  }
+}, [])
+
   return isModalOpen ? (
-    <Modal onCloseModal={handleCloseModal} />
+    <Modal name={email || "Subscriber"} onCloseModal={handleCloseModal} />
   ) : (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.left}>
           <div className={styles.left_content}>
-            <div>
-              <h1>Stay Updated!</h1>
-            </div>
-            <div>
-              <p>Join 60 000+ product managers receiving monthly updates on:</p>
-            </div>
+            <h1>Stay Updated!</h1>
+            <p>Join 60,000+ product managers receiving monthly updates on:</p>
             <div className={styles.list}>
               <img src={icon_list} alt="List" />
               <p>Product discovery and building what matters</p>
@@ -71,8 +80,11 @@ function Newsletter() {
               <img src={icon_list} alt="List" />
               <p>And much more!</p>
             </div>
-            <div>
-              <label htmlFor="email">Email Address</label>
+            <div className={styles.email_label}>
+              <label htmlFor="email">Email address</label>
+              {!isValidEmail && email !== "" && (
+                <p className={styles.warning}>Valid email required</p>
+              )}
             </div>
             <input
               type="email"
@@ -80,21 +92,22 @@ function Newsletter() {
               placeholder="email@company.com"
               value={email}
               onChange={handleEmailChange}
-              className={!isValidEmail ? styles.invalid : ""}
+              className={email !== "" && !isValidEmail ? styles.inputerror : ""}
             />
-            {!isValidEmail && (
-              <p className={styles.error}>
-                Please enter a valid email address.
-              </p>
-            )}
-            <button type="button" onClick={handleSubmit}>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!isValidEmail || email === ""}
+            >
               Subscribe to monthly newsletter
             </button>
           </div>
         </div>
-
         <div className={styles.right}>
-          <img src={desktop_sign_up} alt="Sign Up Illustration" />
+          <img
+            src={view >= 375 ? desktop_sign_up : mobile_sign_up}
+            alt="Sign Up"
+          />
         </div>
       </div>
     </div>

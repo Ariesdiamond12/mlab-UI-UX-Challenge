@@ -83,3 +83,37 @@ button:hover {
   height: 92%;
   margin-right: 10px;
 }
+
+@media only screen and (max-width: 375px) {
+  .wrapper {
+    flex-direction: column-reverse;
+    border-radius: 0;
+    height: 100vh;
+  }
+
+  .left h1 {
+    font-size: 50px;
+  }
+
+  .left div,
+  .left input {
+    margin-bottom: 20px;
+  }
+
+  .right {
+    overflow: hidden;
+    height: 230px;
+  }
+
+  .right img {
+    height: 100%;
+    width: 100%;
+    margin: 0 auto;
+    object-fit: cover;
+  }
+
+  button:hover {
+    background-color: #fbda61;
+    background-image: linear-gradient(45deg, #fbda61 0%, #ff5acd 100%);
+  }
+}
